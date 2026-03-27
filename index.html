@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EliteFit Gym</title>
+<style>
+body{margin:0;font-family:Arial;background:#0a0a0a;color:#fff}
+header{background:#000;padding:20px;display:flex;justify-content:space-between;align-items:center}
+header h1{color:#00ff88}
+nav a{color:#fff;margin:0 10px;text-decoration:none}
+.hero{height:90vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),url('https://images.unsplash.com/photo-1599058917212-d750089bc07e');background-size:cover}
+.hero h2{font-size:50px}
+.btn{background:#00ff88;color:#000;padding:12px 25px;border:none;cursor:pointer;margin-top:10px;font-weight:bold}
+section{padding:60px;text-align:center}
+.cards{display:flex;flex-wrap:wrap;gap:20px;justify-content:center}
+.card{background:#1a1a1a;padding:20px;border-radius:15px;width:260px}
+input,textarea{width:100%;padding:10px;margin:10px 0;border:none;border-radius:5px}
+footer{background:#000;padding:20px;text-align:center}
+.dashboard{display:none;padding:20px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>EliteFit</h1>
+<nav>
+<a href="#">Ana Sayfa</a>
+<a href="#hizmet">Hizmetler</a>
+<a href="#iletisim">İletişim</a>
+<a href="#" onclick="showLogin()">Giriş</a>
+</nav>
+</header>
+
+<div class="hero">
+<h2>LIMITLERİNİ AŞ</h2>
+<p>Profesyonel ekipman & antrenörler</p>
+<button class="btn" onclick="showRegister()">Hemen Katıl</button>
+</div>
+
+<section id="hizmet">
+<h2>Hizmetler</h2>
+<div class="cards">
+<div class="card"><h3>Fitness</h3><p>Kas ve güç</p></div>
+<div class="card"><h3>Kardiyo</h3><p>Yağ yakımı</p></div>
+<div class="card"><h3>PT</h3><p>Kişisel antrenör</p></div>
+</div>
+</section>
+
+<section id="iletisim">
+<h2>İletişim</h2>
+<input placeholder="Adınız">
+<input placeholder="Email">
+<textarea placeholder="Mesaj"></textarea>
+<button class="btn">Gönder</button>
+</section>
+
+<div id="auth" style="display:none;text-align:center;padding:40px">
+<h2 id="authTitle">Giriş</h2>
+<input id="user" placeholder="Kullanıcı adı">
+<input id="pass" type="password" placeholder="Şifre">
+<button class="btn" onclick="login()">Giriş Yap</button>
+<p onclick="showRegister()" style="cursor:pointer">Hesabın yok mu? Kayıt ol</p>
+</div>
+
+<div class="dashboard" id="panel">
+<h2>Üye Paneli</h2>
+<p>Hoşgeldin <span id="username"></span></p>
+<button class="btn" onclick="logout()">Çıkış</button>
+</div>
+
+<footer>
+<p>© 2026 EliteFit Gym</p>
+</footer>
+
+<script>
+let users = JSON.parse(localStorage.getItem('users')) || [];
+
+function showLogin(){
+document.getElementById('auth').style.display='block';
+document.getElementById('authTitle').innerText='Giriş';
+}
+
+function showRegister(){
+document.getElementById('auth').style.display='block';
+document.getElementById('authTitle').innerText='Kayıt Ol';
+}
+
+function login(){
+let u=document.getElementById('user').value;
+let p=document.getElementById('pass').value;
+let found=users.find(x=>x.user==u && x.pass==p);
+if(found){
+localStorage.setItem('active',u);
+showPanel();
+}else{alert('Hatalı giriş');}
+}
+
+function showPanel(){
+document.getElementById('auth').style.display='none';
+document.getElementById('panel').style.display='block';
+document.getElementById('username').innerText=localStorage.getItem('active');
+}
+
+function logout(){
+localStorage.removeItem('active');
+location.reload();
+}
+
+// register logic
+function register(){
+let u=document.getElementById('user').value;
+let p=document.getElementById('pass').value;
+users.push({user:u,pass:p});
+localStorage.setItem('users',JSON.stringify(users));
+alert('Kayıt başarılı');
+}
+
+// change button if register
+setInterval(()=>{
+if(document.getElementById('authTitle').innerText=='Kayıt Ol'){
+document.querySelector('#auth button').onclick=register;
+document.querySelector('#auth button').innerText='Kayıt Ol';
+}else{
+document.querySelector('#auth button').onclick=login;
+document.querySelector('#auth button').innerText='Giriş Yap';
+}
+},500);
+
+// auto login
+if(localStorage.getItem('active')) showPanel();
+</script>
+
+</body>
+</html>
