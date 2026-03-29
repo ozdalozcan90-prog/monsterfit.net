@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MonsterFit App</title>
+<title>MonsterFit</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -15,26 +15,56 @@ width:220px;
 background:#000;
 height:100vh;
 padding:20px;
-position:fixed
+position:fixed;
 }
 .sidebar h2{color:#00ff88;margin-bottom:30px}
 .sidebar button{
-display:block;width:100%;margin:10px 0;padding:12px;
-background:#111;color:#fff;border:none;border-radius:6px;
-cursor:pointer
+display:block;
+width:100%;
+margin:10px 0;
+padding:12px;
+background:#111;
+color:#fff;
+border:none;
+border-radius:6px;
+cursor:pointer;
 }
-.sidebar button:hover{background:#00ff88;color:#000}
+.sidebar button:hover{
+background:#00ff88;
+color:#000;
+}
 
 /* MAIN */
-.main{margin-left:220px;padding:30px;width:100%}
-.section{display:none}
-.active{display:block}
+.main{
+margin-left:220px;
+padding:30px;
+width:100%;
+}
+.section{display:none;}
+.active{display:block;}
 
-.card{background:#111;padding:20px;border-radius:10px;margin:10px 0}
+.card{
+background:#111;
+padding:20px;
+border-radius:10px;
+margin:10px 0;
+}
 
 button.action{
-background:#00ff88;color:#000;padding:10px;border:none;
-border-radius:5px;cursor:pointer;margin:5px
+background:#00ff88;
+color:#000;
+padding:10px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+margin:5px;
+}
+
+input{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:5px;
 }
 </style>
 </head>
@@ -49,7 +79,6 @@ border-radius:5px;cursor:pointer;margin:5px
 <button onclick="show('ai')">🤖 AI</button>
 <button onclick="show('weight')">📊 Kilo</button>
 <button onclick="show('tasks')">🏋️ Görev</button>
-
 </div>
 
 <div class="main">
@@ -71,20 +100,22 @@ border-radius:5px;cursor:pointer;margin:5px
 <div id="ai" class="section">
 <h2>AI</h2>
 <input id="goal" placeholder="kilo ver / kas yap">
+<br>
 <button class="action" onclick="createPlan()">Plan</button>
 <div id="plan" class="card"></div>
 </div>
 
 <div id="weight" class="section">
-<h2>Kilo</h2>
+<h2>Kilo Takibi</h2>
 <input id="w" placeholder="kilo">
+<br>
 <button class="action" onclick="addW()">Ekle</button>
 <div id="list" class="card"></div>
 </div>
 
 <div id="tasks" class="section">
-<h2>Görev</h2>
-<button class="action" onclick="generateTasks()">Ver</button>
+<h2>Görevler</h2>
+<button class="action" onclick="generateTasks()">Görev ver</button>
 <div id="taskList" class="card"></div>
 </div>
 
@@ -92,6 +123,7 @@ border-radius:5px;cursor:pointer;margin:5px
 
 <script>
 
+/* SAYFA GEÇİŞ */
 function show(id){
 document.querySelectorAll('.section').forEach(s=>s.style.display='none');
 document.getElementById(id).style.display='block';
@@ -99,45 +131,64 @@ document.getElementById(id).style.display='block';
 
 /* PROGRAM */
 function showProgram(type){
-let text='';
+let text = '';
 
-if(type==='kas'){
-text='💪 Kas Programı:\\n- 4 gün ağırlık\\n- Protein\\n- Dinlenme';
+if(type === 'kas'){
+text = '💪 Kas Programı:\\n- Haftada 4 gün ağırlık\\n- Protein ağırlıklı beslen\\n- Dinlenmeye dikkat';
 }
 
-if(type==='kilo'){
-text='🔥 Yağ Yakım:\\n- Kardiyo\\n- Kalori açığı\\n- Şeker azalt';
+if(type === 'kilo'){
+text = '🔥 Yağ Yakım:\\n- Günlük kardiyo\\n- Kalori açığı\\n- Şeker azalt';
 }
 
-document.getElementById('programDetail').innerText=text;
+document.getElementById('programDetail').innerText = text;
 }
 
 /* AI */
 function createPlan(){
-let g=document.getElementById('goal').value.toLowerCase();
-let t=g.includes('kilo')?'kardiyo + diyet':'ağırlık + protein';
-document.getElementById('plan').innerText=t;
+let g = document.getElementById('goal').value.toLowerCase();
+let t = '';
+
+if(g.includes('kilo')){
+t = '🔥 Yağ yakım: kardiyo + diyet';
+}else{
+t = '💪 Kas: ağırlık + protein';
+}
+
+document.getElementById('plan').innerText = t;
 }
 
 /* WEIGHT */
-let data=JSON.parse(localStorage.getItem('w'))||[];
+let data = JSON.parse(localStorage.getItem('weights')) || [];
 
 function addW(){
-data.push(w.value);
-localStorage.setItem('w',JSON.stringify(data));
+let kilo = document.getElementById('w').value;
+
+if(kilo === '') return;
+
+data.push(kilo);
+localStorage.setItem('weights', JSON.stringify(data));
 render();
 }
 
 function render(){
-document.getElementById('list').innerText=data.join(' → ')+' kg';
+document.getElementById('list').innerText = data.join(' → ') + ' kg';
 }
+
 render();
 
 /* TASK */
 function generateTasks(){
-let arr=['su iç','koş','spor yap','protein ye','uyu'];
-let r=arr.sort(()=>0.5-Math.random()).slice(0,3);
-document.getElementById('taskList').innerText=r.join('\\n');
+let arr = [
+"💧 3L su iç",
+"🏃 30 dk kardiyo",
+"💪 antrenman yap",
+"🥗 sağlıklı beslen",
+"😴 8 saat uyu"
+];
+
+let r = arr.sort(()=>0.5 - Math.random()).slice(0,3);
+document.getElementById('taskList').innerText = r.join('\\n');
 }
 
 </script>
