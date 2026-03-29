@@ -3,111 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MonsterFit AI+</title>
+<title>MonsterFit App</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial;background:#050505;color:#fff}
-header{display:flex;justify-content:space-between;padding:20px;background:#000}
-h1{color:#00ff88}
-section{padding:30px;text-align:center}
-input,button{padding:10px;margin:10px;border:none;border-radius:6px}
-button{background:#00ff88;color:#000;cursor:pointer}
-.card{background:#111;padding:20px;margin:10px;border-radius:10px}
+body{font-family:Arial;background:#050505;color:#fff;display:flex}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:#000;height:100vh;padding:20px;position:fixed}
+.sidebar h2{color:#00ff88;margin-bottom:30px}
+.sidebar button{display:block;width:100%;margin:10px 0;padding:10px;background:#111;color:#fff;border:none;border-radius:6px;cursor:pointer}
+.sidebar button:hover{background:#00ff88;color:#000}
+
+/* MAIN */
+.main{margin-left:220px;padding:30px;width:100%}
+.section{display:none}
+.active{display:block}
+.card{background:#111;padding:20px;border-radius:10px;margin:10px 0}
+input{padding:10px;margin:5px;border:none;border-radius:5px}
+button.action{background:#00ff88;color:#000;padding:10px;border:none;border-radius:5px;cursor:pointer}
+
 </style>
 </head>
 <body>
 
-<header>
-<h1>MonsterFit AI+</h1>
-</header>
+<div class="sidebar">
+<h2>MonsterFit</h2>
+<button onclick="show('dashboard')">🏠 Dashboard</button>
+<button onclick="show('ai')">🤖 AI Koç</button>
+<button onclick="show('weight')">📊 Kilo Takibi</button>
+<button onclick="show('tasks')">🏋️ Görevler</button>
+</div>
 
-<section>
-<h2>👤 Kullanıcı</h2>
-<input id="usernameInput" placeholder="Kullanıcı adı">
-<button onclick="saveUser()">Kaydet</button>
-<div id="userBox" class="card"></div>
-</section>
+<div class="main">
 
-<section>
-<h2>🤖 AI Antrenör</h2>
-<input id="goal" placeholder="Hedef (kilo ver / kas yap / fit kal)">
-<button onclick="generatePlan()">Plan Oluştur</button>
+<div id="dashboard" class="section active">
+<h2>Dashboard</h2>
+<div class="card">Hoşgeldin <span id="user"></span></div>
+</div>
+
+<div id="ai" class="section">
+<h2>AI Antrenör</h2>
+<input id="goal" placeholder="hedef (kilo ver / kas yap)">
+<button class="action" onclick="plan()">Plan oluştur</button>
 <div id="plan" class="card"></div>
-</section>
+</div>
 
-<section>
-<h2>📊 Kilo Takibi</h2>
-<input id="weight" placeholder="Kilon">
-<button onclick="addWeight()">Kaydet</button>
-<div id="weights" class="card"></div>
-</section>
+<div id="weight" class="section">
+<h2>Kilo Takibi</h2>
+<input id="w" placeholder="kilo">
+<button class="action" onclick="addW()">ekle</button>
+<div id="list" class="card"></div>
+</div>
 
-<section>
-<h2>🏋️ Günlük Görevler</h2>
-<button onclick="generateTasks()">Görev Ver</button>
-<div id="tasks" class="card"></div>
-</section>
+<div id="tasks" class="section">
+<h2>Görevler</h2>
+<button class="action" onclick="tasks()">görev ver</button>
+<div id="taskList" class="card"></div>
+</div>
+
+</div>
 
 <script>
-// USER SYSTEM
-function saveUser(){
-let u=document.getElementById('usernameInput').value;
-localStorage.setItem('user',u);
-showUser();
-}
-function showUser(){
-let u=localStorage.getItem('user');
-document.getElementById('userBox').innerText=u? 'Hoşgeldin '+u : 'Kullanıcı yok';
-}
-showUser();
-
-// AI TRAINER (daha akıllı)
-function generatePlan(){
-let goal=document.getElementById('goal').value.toLowerCase();
-let plan='';
-
-if(goal.includes('kilo')){
-plan='🔥 Yağ yakım: 5 gün kardiyo + kalori açığı + HIIT';
-}else if(goal.includes('kas')){
-plan='💪 Kas: 4 gün split + protein ağırlıklı beslenme';
-}else{
-plan='⚡ Fit: 3 gün full body + dengeli diyet';
+// navigation
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
-document.getElementById('plan').innerText=plan;
+// user
+let username=localStorage.getItem('user')||'guest';
+document.getElementById('user').innerText=username;
+
+// AI
+function plan(){
+let g=goal.value.toLowerCase();
+let t='';
+if(g.includes('kilo')) t='kardiyo + diyet';
+else t='ağırlık + protein';
+plan.innerText=t;
 }
 
-// WEIGHT TRACK (kullanıcıya özel)
-function getKey(){
-return 'weights_'+(localStorage.getItem('user')||'guest');
+// weight
+let data=JSON.parse(localStorage.getItem('w_'+username))||[];
+function addW(){
+data.push(w.value);
+localStorage.setItem('w_'+username,JSON.stringify(data));
+render();
 }
+function render(){list.innerText=data.join(' -> ')+' kg';}
+render();
 
-let weightData = JSON.parse(localStorage.getItem(getKey())) || [];
-
-function addWeight(){
-let w=document.getElementById('weight').value;
-weightData.push(w);
-localStorage.setItem(getKey(),JSON.stringify(weightData));
-showWeights();
-}
-
-function showWeights(){
-let data=JSON.parse(localStorage.getItem(getKey())) || [];
-document.getElementById('weights').innerText=data.join(' → ')+' kg';
-}
-showWeights();
-
-// DAILY TASKS
-function generateTasks(){
-let tasks=[
-"💧 3 litre su iç",
-"🏃 30 dk kardiyo yap",
-"💪 4 set antrenman yap",
-"🥗 sağlıklı beslen",
-"😴 7-8 saat uyu"
-];
-let random=tasks.sort(()=>0.5-Math.random()).slice(0,3);
-document.getElementById('tasks').innerText=random.join('\n');
+// tasks
+function tasks(){
+let arr=['su iç','spor yap','koş','protein ye','uyu'];
+let r=arr.sort(()=>0.5-Math.random()).slice(0,3);
+taskList.innerText=r.join('\n');
 }
 </script>
 
