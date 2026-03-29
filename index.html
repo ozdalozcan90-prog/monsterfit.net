@@ -3,119 +3,112 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MonsterFit</title>
+<title>MonsterFit AI+</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial;background:#050505;color:#fff;overflow-x:hidden}
-
-header{display:flex;justify-content:space-between;align-items:center;padding:20px 40px;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);position:fixed;width:100%;z-index:10}
-header h1{color:#00ff88;font-size:28px;text-shadow:0 0 10px #00ff88}
-nav a{color:#aaa;margin:0 15px;text-decoration:none;transition:.3s}
-nav a:hover{color:#00ff88;text-shadow:0 0 10px #00ff88}
-
-.hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:radial-gradient(circle at center,#000 20%,#050505 100%),url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61');background-size:cover}
-.hero h2{font-size:70px;letter-spacing:3px;text-shadow:0 0 20px #00ff88,0 0 40px #00ff88}
-.hero p{color:#888;margin:20px 0}
-.btn{background:#00ff88;color:#000;padding:14px 35px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;transition:.3s;box-shadow:0 0 20px #00ff88}
-.btn:hover{transform:scale(1.1);box-shadow:0 0 40px #00ff88}
-
-section{padding:100px 40px}
-h2{margin-bottom:40px;text-align:center;font-size:32px;text-shadow:0 0 10px #00ff88}
-
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px}
-.card{background:#0d0d0d;padding:30px;border-radius:15px;transition:.3s;position:relative;overflow:hidden}
-.card::before{content:"";position:absolute;width:100%;height:100%;top:0;left:0;background:linear-gradient(120deg,transparent,#00ff8855,transparent);opacity:0;transition:.3s}
-.card:hover::before{opacity:1}
-.card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 0 25px #00ff88}
-
-.dashboard{display:none;padding:60px;text-align:center}
-
-input{padding:12px;margin:10px;width:260px;border:none;border-radius:5px;background:#111;color:#fff}
-
-.glow{animation:glow 2s infinite alternate}
-@keyframes glow{
-from{text-shadow:0 0 10px #00ff88}
-to{text-shadow:0 0 30px #00ff88,0 0 60px #00ff88}
-}
-
+body{font-family:Arial;background:#050505;color:#fff}
+header{display:flex;justify-content:space-between;padding:20px;background:#000}
+h1{color:#00ff88}
+section{padding:30px;text-align:center}
+input,button{padding:10px;margin:10px;border:none;border-radius:6px}
+button{background:#00ff88;color:#000;cursor:pointer}
+.card{background:#111;padding:20px;margin:10px;border-radius:10px}
 </style>
 </head>
 <body>
 
 <header>
-<h1 class="glow">MonsterFit</h1>
-<nav>
-<a href="#">Ana Sayfa</a>
-<a href="#program">Program</a>
-<a href="#diyet">Diyet</a>
-<a href="#" onclick="showLogin()">Giriş</a>
-</nav>
+<h1>MonsterFit AI+</h1>
 </header>
 
-<div class="hero">
-<h2>CANAVAR MODU</h2>
-<p>Sınırlarını parçala</p>
-<button class="btn" onclick="showLogin()">BAŞLA</button>
-</div>
-
-<section id="program">
-<h2>ANTRENMAN SİSTEMİ</h2>
-<div class="cards">
-<div class="card"><h3>🔥 Yağ Yakım</h3><p>Agresif definasyon</p></div>
-<div class="card"><h3>💪 Kas Kazan</h3><p>Hacim + güç</p></div>
-<div class="card"><h3>⚡ Performans</h3><p>Patlayıcı güç</p></div>
-</div>
+<section>
+<h2>👤 Kullanıcı</h2>
+<input id="usernameInput" placeholder="Kullanıcı adı">
+<button onclick="saveUser()">Kaydet</button>
+<div id="userBox" class="card"></div>
 </section>
 
-<section id="diyet">
-<h2>DİYET SİSTEMİ</h2>
-<div class="cards">
-<div class="card"><h3>🥗 Clean</h3><p>Fit kal</p></div>
-<div class="card"><h3>🍗 Bulk</h3><p>Kilo al</p></div>
-<div class="card"><h3>🔥 Cut</h3><p>Yağ yak</p></div>
-</div>
+<section>
+<h2>🤖 AI Antrenör</h2>
+<input id="goal" placeholder="Hedef (kilo ver / kas yap / fit kal)">
+<button onclick="generatePlan()">Plan Oluştur</button>
+<div id="plan" class="card"></div>
 </section>
 
-<div id="auth" style="display:none;text-align:center;padding:80px">
-<h2>GİRİŞ / KAYIT</h2>
-<input id="user" placeholder="Email"><br>
-<input id="pass" type="password" placeholder="Şifre"><br>
-<button class="btn" onclick="login()">Giriş</button>
-<button class="btn" onclick="register()">Kayıt</button>
-</div>
+<section>
+<h2>📊 Kilo Takibi</h2>
+<input id="weight" placeholder="Kilon">
+<button onclick="addWeight()">Kaydet</button>
+<div id="weights" class="card"></div>
+</section>
 
-<div class="dashboard" id="panel">
-<h2 class="glow">HOŞGELDİN <span id="username"></span></h2>
-<p>Bugün sınırlarını zorla 💪</p>
-<button class="btn" onclick="logout()">Çıkış</button>
-</div>
+<section>
+<h2>🏋️ Günlük Görevler</h2>
+<button onclick="generateTasks()">Görev Ver</button>
+<div id="tasks" class="card"></div>
+</section>
 
 <script>
-let users = JSON.parse(localStorage.getItem('users')) || [];
+// USER SYSTEM
+function saveUser(){
+let u=document.getElementById('usernameInput').value;
+localStorage.setItem('user',u);
+showUser();
+}
+function showUser(){
+let u=localStorage.getItem('user');
+document.getElementById('userBox').innerText=u? 'Hoşgeldin '+u : 'Kullanıcı yok';
+}
+showUser();
 
-function showLogin(){auth.style.display='block'}
+// AI TRAINER (daha akıllı)
+function generatePlan(){
+let goal=document.getElementById('goal').value.toLowerCase();
+let plan='';
 
-function register(){
-users.push({u:user.value,p:pass.value});
-localStorage.setItem('users',JSON.stringify(users));
-alert('Kayıt tamam');
+if(goal.includes('kilo')){
+plan='🔥 Yağ yakım: 5 gün kardiyo + kalori açığı + HIIT';
+}else if(goal.includes('kas')){
+plan='💪 Kas: 4 gün split + protein ağırlıklı beslenme';
+}else{
+plan='⚡ Fit: 3 gün full body + dengeli diyet';
 }
 
-function login(){
-let f=users.find(x=>x.u==user.value && x.p==pass.value);
-if(f){localStorage.setItem('active',user.value);showPanel();}
-else alert('Hatalı');
+document.getElementById('plan').innerText=plan;
 }
 
-function showPanel(){
-auth.style.display='none';
-panel.style.display='block';
-username.innerText=localStorage.getItem('active');
+// WEIGHT TRACK (kullanıcıya özel)
+function getKey(){
+return 'weights_'+(localStorage.getItem('user')||'guest');
 }
 
-function logout(){localStorage.removeItem('active');location.reload();}
+let weightData = JSON.parse(localStorage.getItem(getKey())) || [];
 
-if(localStorage.getItem('active')) showPanel();
+function addWeight(){
+let w=document.getElementById('weight').value;
+weightData.push(w);
+localStorage.setItem(getKey(),JSON.stringify(weightData));
+showWeights();
+}
+
+function showWeights(){
+let data=JSON.parse(localStorage.getItem(getKey())) || [];
+document.getElementById('weights').innerText=data.join(' → ')+' kg';
+}
+showWeights();
+
+// DAILY TASKS
+function generateTasks(){
+let tasks=[
+"💧 3 litre su iç",
+"🏃 30 dk kardiyo yap",
+"💪 4 set antrenman yap",
+"🥗 sağlıklı beslen",
+"😴 7-8 saat uyu"
+];
+let random=tasks.sort(()=>0.5-Math.random()).slice(0,3);
+document.getElementById('tasks').innerText=random.join('\n');
+}
 </script>
 
 </body>
