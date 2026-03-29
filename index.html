@@ -170,7 +170,19 @@ let r = arr.sort(()=>0.5 - Math.random()).slice(0,3);
 document.getElementById('taskList').innerText = r.join('\\n');
 }
 
-</script>
+</script>function showProgram(type){
+let text = '';
+
+if(type === 'kas'){
+text = '💪 Kas Programı:\\n- Haftada 4 gün ağırlık\\n- Protein ağırlıklı beslen\\n- Dinlenmeye dikkat';
+}
+
+if(type === 'kilo'){
+text = '🔥 Yağ Yakım:\\n- Günlük kardiyo\\n- Kalori açığı\\n- Şeker azalt';
+}
+
+document.getElementById('programDetail').innerText = text;
+}
 
 </body>
 </html>
